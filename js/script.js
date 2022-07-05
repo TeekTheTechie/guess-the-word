@@ -61,6 +61,43 @@ const makeGuess = function (guess) {
      } else {
          playerGuessedLetters.push(guess);
          console.log(playerGuessedLetters);
+         guessedLettersShown();
+         updateWordInProgress(playerGuessedLetters);
         
      }
 };
+      //Function to Show Guessed Letters
+const guessedLettersShown = function () {
+    guessedLetters.innerHTML = "";
+    for (const letter of playerGuessedLetters) {
+        const li = document.createElement("li");
+        li.innerText = letter;
+        guessedLetters.append(li);
+    }
+};
+
+      //Function to Update Word in Progress
+const updateWordInProgress = function (playerGuessedLetters) {
+    const wordUpper = word.toUpperCase();
+  const wordArray = wordUpper.split("");
+  const revealWord = [];
+  for (const letter of wordArray) {
+    if (playerGuessedLetters.includes(letter)) {
+      revealWord.push(letter.toUpperCase());
+    } else {
+      revealWord.push("●");
+    }
+  }
+  console.log(revealWord)
+
+wordInProgress.innerText = revealWord.join('');
+checkIfWin();
+};
+
+     //Function to check for a win
+     const checkIfWin = function () {
+        if (word.toUpperCase() === wordInProgress.innerText) {
+          message.classList.add("win");
+          message.innerHTML = `<p class="highlight">You guessed the correct word! Congrats!</p>`;
+        }
+      };     
