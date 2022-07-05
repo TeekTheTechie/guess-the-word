@@ -3,6 +3,7 @@
 //Step 2: Accept and Validate Player Guesses
 //Step 3: Display Word & Guessed Letters
 //Step 4: Fetch Words & Remaining Guesses
+//Step 5: Hide "Guess" button, show "Play Again", and click event for new word and restart the guesses
 
 
 const guessedLetters = document.querySelector(".guessed-letters");//targeting the unordered list where the player’s guessed letters will appear
@@ -15,7 +16,7 @@ const message = document.querySelector(".message"); //targeting the empty paragr
 const playAgainButton = document.querySelector(".play-again"); //targeting the hidden button that will appear prompting the player to play again.
 
 let word = "magnolia"; // starting word used to test game
-const playerGuessedLetters = [];
+let playerGuessedLetters = [];
 let remainingGuessesShown = 8;
 
 
@@ -107,7 +108,7 @@ const updateWordInProgress = function (playerGuessedLetters) {
       revealWord.push("●");
     }
   }
-  console.log(revealWord)
+  //console.log(revealWord)
 
 wordInProgress.innerText = revealWord.join('');
 checkIfWin();
@@ -123,10 +124,12 @@ const updateGuessesRemaining = function (guess) {
     }  else {
         message.innerText = `Great guess! There's a ${guess}!`;
     }
-    if (remainingGuesses === 0) {
+
+    if (remainingGuessesShown === 0) {
         message.innerHTML = `Game over! The word was <span class="highlight">${word}</span>.`;
-    } else if (remainingGuesses === 1) {
-        remainingGuessesSpan.innerText = `Only ${remainingGuesses} guess left!`;
+        startOver();
+    } else if (remainingGuessesShown === 1) {
+        remainingGuessesSpan.innerText = `${remainingGuessesShown} guess` ;
     } else {
       remainingGuessesSpan.innerText = `${remainingGuessesShown} guesses`;
     }
@@ -137,5 +140,33 @@ const updateGuessesRemaining = function (guess) {
         if (word.toUpperCase() === wordInProgress.innerText) {
           message.classList.add("win");
           message.innerHTML = `<p class="highlight">You guessed the correct word! Congrats!</p>`;
+
+          startOver();
         }
       };     
+
+      //Function created to Hide and Show Elements
+      const startOver = function () {
+          guessButton.classList.add("hide");
+          remainingGuesses.classList.add("hide");
+          guessedLetters.classList.add("hide");
+          playAgainButton.classList.remove("hide");
+      };
+
+      playAgainButton.addEventListener("click", function () {
+        // reset all original values - grab new word
+        message.classList.remove("win");
+        playerGuessedLetters = [];
+        remainingGuessesShown = 8;
+        remainingGuessesSpan.innerText = `${remainingGuessesShown} guesses`;
+        guessedLetters.innerHTML = "";
+        message.innerText = "";
+        // Grab a new word
+        getWord();
+
+        // show the right UI elements
+  guessButton.classList.remove("hide");
+  playAgainButton.classList.add("hide");
+  remainingGuesses.classList.remove("hide");
+  guessedLetters.classList.remove("hide");
+});
